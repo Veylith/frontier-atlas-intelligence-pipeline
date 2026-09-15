@@ -1,5 +1,10 @@
 # FrontierAtlas Global Intelligence Graph Ingestion Pipeline
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue?style=for-the-badge&logo=github)](https://veylith.github.io/frontier-atlas-intelligence-pipeline/)
+[![Data Pipeline](https://img.shields.io/badge/Pipeline-100%25%20Passing-success?style=for-the-badge&logo=python)](https://github.com/Veylith/frontier-atlas-intelligence-pipeline)
+[![Architecture Whitepaper](https://img.shields.io/badge/Whitepaper-3--Page%20PDF-red?style=for-the-badge&logo=adobe-acrobat-reader)](architecture.pdf)
+
+> 🌐 **Interactive Live Demo Dashboard**: [https://veylith.github.io/frontier-atlas-intelligence-pipeline/](https://veylith.github.io/frontier-atlas-intelligence-pipeline/)
 
 ---
 
