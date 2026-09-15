@@ -169,43 +169,6 @@ python -m pytest tests/ -v
 
 ---
 
-## 4. Phase-by-Phase Technical Implementation
-
-### Phase I: Massive One-Time Data Acquisition (Scale to 500k+)
-- **Research Papers**: Ingests papers from **OpenAlex API** and **arXiv**, parsing titles, authors, DOIs, publication timestamps, and correlating with **GitHub repositories**. Live GitHub stargazers are asynchronously resolved and indexed.
-- **Startups**: Ingests AI company entities from **Hugging Face Hub Model Developers**, **Venture Registries**, and **Seed KB**, normalizing employee counts, websites, founding years, and categories.
-- **Products**: Ingests AI tools and foundation model endpoints from **Hugging Face Spaces & Models**, classifying pricing models into exact enums: `FREE`, `FREEMIUM`, `PAID`, `ENTERPRISE`.
-
-### Phase II: High-Fidelity Signal Ingestion (24-Hour Freshness)
-- **5 AI News Sources**: *TechCrunch AI*, *VentureBeat AI*, *The Verge AI*, *AI News Daily*, and *arXiv Announcements*. Full-text article content is extracted while stripping boilerplate, navigation, ads, and footers.
-- **5 AI Job Boards**: *RemoteOK AI*, *Remotive AI*, *Jobicy AI*, *WeWorkRemotely AI*, and *Himalayas Remote AI*.
-- **Date Normalization**: `DateNormalizer` converts ISO-8601, RFC-2822, UNIX timestamps, JSON-LD `datePublished`, OpenGraph `article:published_time`, and relative strings (*"2 hours ago"*, *"45m ago"*, *"yesterday"*) into UTC datetimes.
-- **Strict 24h Filter**: Rejects any article/job with $\Delta t > 24\text{ hours}$.
-
-### Phase III: Multi-Tier LLM Extraction Engine
-- **413 Payload Prevention**: `SemanticChunker` prunes AST/DOM trees and enforces a 3,500-token sliding window with 250-token overlap, guaranteeing zero HTTP 413 Payload Too Large errors.
-- **429 Rate Limit Mitigation**: `TokenBucketRateLimiter` enforces RPM/TPM client ceilings. `FullJitterBackoff` implements $t = \text{uniform}(0.1, \min(\text{Cap}, \text{Base} \times 2^{\text{attempt}}))$ with explicit `Retry-After` header parsing.
-- **Multi-Tier Circuit Breaker**:
-  1. *Tier 1:* Gemini 1.5 / 2.0 Flash (Fast JSON mode, high speed).
-  2. *Tier 2:* Groq Llama 3.3 70B (Sub-second low latency failover).
-  3. *Tier 3:* High-Precision Deterministic Rule Heuristics (Guarantees 100% uptime).
-
-### Phase IV: Deterministic Entity Resolution
-- **Canonical Seed KB**: Seeded with 50+ frontier AI startups (OpenAI, Anthropic, Mistral AI, Cohere, Hugging Face, Scale AI, Midjourney, Stability AI, Cursor, etc.).
-- **Multi-Stage Canonicalization**:
-  1. Exact seed name and alias lookup.
-  2. Rule-based legal suffix stripping (`Inc`, `LLC`, `Ltd`, `Corp`, `PBC`, `GmbH`, `SAS`, `B.V.`, `Pte Ltd`, `Technologies`, `Labs`).
-  3. Domain / Hostname URL matching (`openai.com` $\to$ `OpenAI`).
-  4. Hybrid RapidFuzz string similarity (Token Sort Ratio + Jaro-Winkler with threshold $\ge 0.85$).
-- **Audit Trail**: Generates `EntityMappingLog` with `raw_name`, `canonical_name`, `confidence_score`, `method_used`, and `source_url`.
-
-### Phase V: Anti-Bot & Scale Thinking
-- Real browser fingerprint emulation (`sec-ch-ua`, `Sec-Fetch-*` headers).
-- User-Agent pool rotation.
-- Playwright Async stealth engine for Cloudflare Turnstile / Datadome bypassing.
-- Complete 500,000+ scaling design in `architecture.pdf`.
-
----
 
 ## 5. Deliverables & Data Output Summary
 
