@@ -75,6 +75,8 @@
       background: rgba(99, 102, 241, 0.8);
     }
   </style>
+  <!-- Embedded Pipeline Data -->
+  <script src="data.js"></script>
 </head>
 <body class="min-h-screen flex flex-col antialiased custom-scrollbar">
 
@@ -169,6 +171,34 @@
           <div class="text-2xl font-extrabold text-white mt-0.5" id="kpi-mapping">2,000</div>
           <div class="text-[10px] text-gray-400 mt-0.5">Canonicalized & Scored</div>
         </div>
+      </div>
+    </div>
+
+        <!-- DATASET DOWNLOAD & EXCEL BANNER -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl glass-card border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-dark-800 to-indigo-950/40">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">
+          📊
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center space-x-2">
+            <span>FrontierAtlas Master Dataset (6 Normalized Tabs)</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Verified Live Data</span>
+          </div>
+          <p class="text-xs text-gray-300 mt-0.5">
+            1,000+ Startups &bull; 1,000+ Products &bull; 1,000+ Papers (with live GitHub stars) &bull; 24h News & Jobs &bull; 2,000 Entity Audit Logs
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2.5 w-full sm:w-auto">
+        <button onclick="downloadExcel()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Download Excel (.xlsx)</span>
+        </button>
+        <button onclick="downloadCurrentTabCsv()" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold border border-gray-700 flex items-center justify-center space-x-1.5 transition">
+          <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Export Tab CSV</span>
+        </button>
       </div>
     </div>
 
@@ -370,15 +400,33 @@
     const pageSize = 50;
 
     // Fetch JSON datasets
+        function updateKpis() {
+      if (document.getElementById('kpi-startups')) document.getElementById('kpi-startups').innerText = (allData.startups || []).length.toLocaleString();
+      if (document.getElementById('kpi-products')) document.getElementById('kpi-products').innerText = (allData.products || []).length.toLocaleString();
+      if (document.getElementById('kpi-papers')) document.getElementById('kpi-papers').innerText = (allData.papers || []).length.toLocaleString();
+      if (document.getElementById('kpi-news')) document.getElementById('kpi-news').innerText = (allData.news || []).length.toLocaleString();
+      if (document.getElementById('kpi-jobs')) document.getElementById('kpi-jobs').innerText = (allData.jobs || []).length.toLocaleString();
+      if (document.getElementById('kpi-mapping')) document.getElementById('kpi-mapping').innerText = (allData.mapping || []).length.toLocaleString();
+    }
+
     async function loadAllDatasets() {
+      // 1. Prioritize synchronous embedded data (works locally on file:/// and on GitHub Pages)
+      if (window.PIPELINE_DATA && window.PIPELINE_DATA.startups && window.PIPELINE_DATA.startups.length > 0) {
+        allData = window.PIPELINE_DATA;
+        updateKpis();
+        renderCurrentTab();
+        return;
+      }
+
+      // 2. Fallback to async JSON fetch
       try {
         const [stRes, prRes, paRes, neRes, joRes, maRes] = await Promise.all([
-          fetch('data/json/startups.json').then(r => r.json()),
-          fetch('data/json/products.json').then(r => r.json()),
-          fetch('data/json/research_papers.json').then(r => r.json()),
-          fetch('data/json/news.json').then(r => r.json()),
-          fetch('data/json/jobs.json').then(r => r.json()),
-          fetch('data/json/entity_mapping_log.json').then(r => r.json())
+          fetch('data/json/startups.json').then(r => r.json()).catch(() => []),
+          fetch('data/json/products.json').then(r => r.json()).catch(() => []),
+          fetch('data/json/research_papers.json').then(r => r.json()).catch(() => []),
+          fetch('data/json/news.json').then(r => r.json()).catch(() => []),
+          fetch('data/json/jobs.json').then(r => r.json()).catch(() => []),
+          fetch('data/json/entity_mapping_log.json').then(r => r.json()).catch(() => [])
         ]);
 
         allData.startups = stRes || [];
@@ -388,19 +436,33 @@
         allData.jobs = joRes || [];
         allData.mapping = maRes || [];
 
-        // Update KPIs
-        document.getElementById('kpi-startups').innerText = allData.startups.length.toLocaleString();
-        document.getElementById('kpi-products').innerText = allData.products.length.toLocaleString();
-        document.getElementById('kpi-papers').innerText = allData.papers.length.toLocaleString();
-        document.getElementById('kpi-news').innerText = allData.news.length.toLocaleString();
-        document.getElementById('kpi-jobs').innerText = allData.jobs.length.toLocaleString();
-        document.getElementById('kpi-mapping').innerText = allData.mapping.length.toLocaleString();
-
+        updateKpis();
         renderCurrentTab();
       } catch (e) {
         console.error("Error loading datasets:", e);
       }
     }
+
+    
+
+    function downloadCurrentTabCsv() {
+      const tabToFile = {
+        startups: 'startups.csv',
+        products: 'products.csv',
+        papers: 'research_papers.csv',
+        news: 'news.csv',
+        jobs: 'jobs.csv',
+        mapping: 'entity_mapping_log.csv'
+      };
+      const file = tabToFile[currentTab] || 'startups.csv';
+      const a = document.createElement('a');
+      a.href = 'data/csv/' + file;
+      a.download = file;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
 
     function switchTab(tabId) {
       currentTab = tabId;
@@ -747,9 +809,7 @@
       runSandboxResolution();
     }
 
-    function downloadExcel() {
-      window.location.href = 'data/FrontierAtlas_Intelligence_Graph.xlsx';
-    }
+    
 
     function escapeHtml(str) {
       if (!str) return '';
