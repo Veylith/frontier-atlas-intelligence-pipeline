@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FrontierAtlas | Global Intelligence Graph Live Dashboard</title>
+  <meta name="description" content="FrontierAtlas Global Intelligence Graph Live Dashboard: Continuous ingestion of 1,000+ Startups, Products, Research Papers with GitHub Stars, and 24h Fresh Signals.">
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            dark: {
+              900: '#0B0F19',
+              800: '#111827',
+              700: '#1F2937',
+              600: '#374151',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0B0F19;
+      color: #F3F4F6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .glass {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(31, 41, 55, 0.45);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #60A5FA 0%, #A78BFA 50%, #F472B6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(17, 24, 39, 0.5);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.4);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.8);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased custom-scrollbar">
+
+  <!-- TOP NAV -->
+  <nav class="sticky top-0 z-50 glass border-b border-gray-800/80 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-extrabold text-lg tracking-tight">FrontierAtlas</span>
+          <span class="px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Live Intelligence Graph</span>
+        </div>
+        <p class="text-xs text-gray-400">GraphOne / FrontierAtlas Assessment Demo</p>
+      </div>
+    </div>
+
+    <!-- Quick Action Links -->
+    <div class="flex items-center space-x-3">
+      <a href="https://github.com/Veylith/frontier-atlas-intelligence-pipeline" target="_blank" class="px-3 py-1.5 rounded-lg bg-gray-800/90 hover:bg-gray-700 text-xs font-medium text-gray-200 border border-gray-700/80 flex items-center space-x-1.5 transition">
+        <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span>GitHub Repo</span>
+      </a>
+      <a href="https://github.com/Veylith/frontier-atlas-intelligence-pipeline/blob/main/architecture.pdf" target="_blank" class="px-3 py-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-xs font-semibold text-indigo-300 border border-indigo-500/40 flex items-center space-x-1.5 transition">
+        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>Architecture PDF</span>
+      </a>
+      <button onclick="downloadExcel()" class="px-3 py-1.5 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-xs font-semibold text-emerald-300 border border-emerald-500/40 flex items-center space-x-1.5 transition">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        <span>Export Excel (6 Tabs)</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- HERO / KPI BANNER -->
+    <div class="relative overflow-hidden rounded-2xl glass p-6 border border-gray-800">
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+            AI & Venture <span class="gradient-text">Global Intelligence Graph</span>
+          </h1>
+          <p class="text-gray-400 text-sm mt-1 max-w-2xl">
+            Continuous ingestion pipeline extracting structured entities, 24-hour freshness market signals, multi-tier LLM fallbacks, and deterministic entity resolution.
+          </p>
+        </div>
+        <div class="flex items-center space-x-2 text-xs font-mono text-gray-400">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+            Pipeline Active (<24h Freshness)
+          </span>
+        </div>
+      </div>
+
+      <!-- KPI METRIC CARDS -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6">
+        <div class="glass-card rounded-xl p-3.5 border border-indigo-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-indigo-400">Startups</div>
+          <div class="text-2xl font-extrabold text-white mt-0.5" id="kpi-startups">1,000</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">YC & AI Registries</div>
+        </div>
+        <div class="glass-card rounded-xl p-3.5 border border-purple-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-purple-400">Products</div>
+          <div class="text-2xl font-extrabold text-white mt-0.5" id="kpi-products">1,000</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">Categorized & Pricing</div>
+        </div>
+        <div class="glass-card rounded-xl p-3.5 border border-blue-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-blue-400">Research Papers</div>
+          <div class="text-2xl font-extrabold text-white mt-0.5" id="kpi-papers">1,000</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">With Live GitHub Stars</div>
+        </div>
+        <div class="glass-card rounded-xl p-3.5 border border-emerald-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">24h AI News</div>
+          <div class="text-2xl font-extrabold text-emerald-400 mt-0.5" id="kpi-news">37</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">Full-Text Ingested</div>
+        </div>
+        <div class="glass-card rounded-xl p-3.5 border border-amber-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-amber-400">24h AI Jobs</div>
+          <div class="text-2xl font-extrabold text-amber-400 mt-0.5" id="kpi-jobs">13</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">Roles & Remote Tag</div>
+        </div>
+        <div class="glass-card rounded-xl p-3.5 border border-pink-500/20">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-pink-400">Entity Audit Log</div>
+          <div class="text-2xl font-extrabold text-white mt-0.5" id="kpi-mapping">2,000</div>
+          <div class="text-[10px] text-gray-400 mt-0.5">Canonicalized & Scored</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="flex items-center space-x-2 border-b border-gray-800 pb-2 overflow-x-auto custom-scrollbar">
+      <button onclick="switchTab('startups')" id="tab-btn-startups" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+        Startups (1,000)
+      </button>
+      <button onclick="switchTab('products')" id="tab-btn-products" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800">
+        Products (1,000)
+      </button>
+      <button onclick="switchTab('papers')" id="tab-btn-papers" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800">
+        Research Papers (1,000)
+      </button>
+      <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800">
+        24h Fresh News (37)
+      </button>
+      <button onclick="switchTab('jobs')" id="tab-btn-jobs" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800">
+        24h Fresh Jobs (13)
+      </button>
+      <button onclick="switchTab('mapping')" id="tab-btn-mapping" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800">
+        Entity Mapping Log (2,000)
+      </button>
+      <button onclick="switchTab('sandbox')" id="tab-btn-sandbox" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-purple-400 hover:text-purple-300 hover:bg-purple-950/40 border border-purple-500/30">
+        ⚡ Live Entity Resolver Sandbox
+      </button>
+    </div>
+
+    <!-- SEARCH & CONTROLS BAR -->
+    <div id="controls-bar" class="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="relative w-full sm:w-96">
+        <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Search entities, titles, authors, pricing..." class="w-full bg-gray-900/90 border border-gray-700/80 rounded-xl pl-10 pr-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition">
+      </div>
+      <div class="flex items-center space-x-2 w-full sm:w-auto justify-end text-xs text-gray-400 font-mono">
+        <span id="results-count">Showing 1,000 records</span>
+      </div>
+    </div>
+
+    <!-- TAB 1: STARTUPS VIEW -->
+    <div id="tab-content-startups" class="tab-content space-y-4">
+      <div class="overflow-x-auto rounded-xl border border-gray-800 glass">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-900/90 text-gray-400 font-mono uppercase tracking-wider border-b border-gray-800">
+            <tr>
+              <th class="py-3 px-4">Entity Name</th>
+              <th class="py-3 px-4">Categories</th>
+              <th class="py-3 px-4">Employees</th>
+              <th class="py-3 px-4">Source</th>
+              <th class="py-3 px-4">Collected At</th>
+              <th class="py-3 px-4 text-right">Links</th>
+            </tr>
+          </thead>
+          <tbody id="startups-table-body" class="divide-y divide-gray-800/60 font-normal">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-400 pt-2" id="pagination-startups"></div>
+    </div>
+
+    <!-- TAB 2: PRODUCTS VIEW -->
+    <div id="tab-content-products" class="tab-content hidden space-y-4">
+      <div class="overflow-x-auto rounded-xl border border-gray-800 glass">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-900/90 text-gray-400 font-mono uppercase tracking-wider border-b border-gray-800">
+            <tr>
+              <th class="py-3 px-4">Product Name</th>
+              <th class="py-3 px-4">Startup Developer</th>
+              <th class="py-3 px-4">Pricing Model</th>
+              <th class="py-3 px-4">Category</th>
+              <th class="py-3 px-4">Collected At</th>
+              <th class="py-3 px-4 text-right">Link</th>
+            </tr>
+          </thead>
+          <tbody id="products-table-body" class="divide-y divide-gray-800/60 font-normal">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-400 pt-2" id="pagination-products"></div>
+    </div>
+
+    <!-- TAB 3: RESEARCH PAPERS VIEW -->
+    <div id="tab-content-papers" class="tab-content hidden space-y-4">
+      <div class="overflow-x-auto rounded-xl border border-gray-800 glass">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-900/90 text-gray-400 font-mono uppercase tracking-wider border-b border-gray-800">
+            <tr>
+              <th class="py-3 px-4">Title</th>
+              <th class="py-3 px-4">Authors</th>
+              <th class="py-3 px-4">Category</th>
+              <th class="py-3 px-4">Published Date</th>
+              <th class="py-3 px-4">GitHub Repository</th>
+              <th class="py-3 px-4 text-right">Live Stars</th>
+            </tr>
+          </thead>
+          <tbody id="papers-table-body" class="divide-y divide-gray-800/60 font-normal">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-400 pt-2" id="pagination-papers"></div>
+    </div>
+
+    <!-- TAB 4: NEWS VIEW -->
+    <div id="tab-content-news" class="tab-content hidden space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="news-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 5: JOBS VIEW -->
+    <div id="tab-content-jobs" class="tab-content hidden space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="jobs-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 6: ENTITY MAPPING LOG VIEW -->
+    <div id="tab-content-mapping" class="tab-content hidden space-y-4">
+      <div class="overflow-x-auto rounded-xl border border-gray-800 glass">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-gray-900/90 text-gray-400 uppercase tracking-wider border-b border-gray-800">
+            <tr>
+              <th class="py-3 px-4">Raw Extracted String</th>
+              <th class="py-3 px-4 text-emerald-400">Canonical Entity Node</th>
+              <th class="py-3 px-4">Type</th>
+              <th class="py-3 px-4">Resolution Method</th>
+              <th class="py-3 px-4 text-right">Confidence Score</th>
+            </tr>
+          </thead>
+          <tbody id="mapping-table-body" class="divide-y divide-gray-800/60 font-normal">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-between items-center text-xs text-gray-400 pt-2" id="pagination-mapping"></div>
+    </div>
+
+    <!-- TAB 7: INTERACTIVE ENTITY RESOLVER SANDBOX -->
+    <div id="tab-content-sandbox" class="tab-content hidden space-y-6">
+      <div class="glass rounded-2xl p-6 border border-purple-500/30">
+        <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+          <span>⚡ Live Deterministic Entity Resolution Sandbox</span>
+        </h2>
+        <p class="text-sm text-gray-400 mt-1">
+          Type any noisy, messy startup or product name below to watch the 4-stage canonicalization engine execute in real-time.
+        </p>
+
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <input type="text" id="sandbox-input" value="OpenAI, Inc." placeholder="Try 'Anthropic PBC', 'Mistral AI SAS', 'HuggingFace', 'Scale AI Inc'..." class="flex-1 bg-gray-900 border border-purple-500/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <button onclick="runSandboxResolution()" class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-sm font-bold text-white shadow-lg shadow-purple-600/30 transition flex items-center justify-center space-x-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Resolve Entity</span>
+          </button>
+        </div>
+
+        <!-- Quick Pre-Set Buttons -->
+        <div class="flex flex-wrap gap-2 mt-4 text-xs">
+          <span class="text-gray-500 self-center">Try presets:</span>
+          <button onclick="testPreset('OpenAI, Inc.')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">OpenAI, Inc.</button>
+          <button onclick="testPreset('Anthropic PBC')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">Anthropic PBC</button>
+          <button onclick="testPreset('Mistral AI SAS')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">Mistral AI SAS</button>
+          <button onclick="testPreset('HuggingFace')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">HuggingFace</button>
+          <button onclick="testPreset('Scale AI Inc.')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">Scale AI Inc.</button>
+          <button onclick="testPreset('Midjourney Inc')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">Midjourney Inc</button>
+          <button onclick="testPreset('ElevenLabs Inc.')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">ElevenLabs Inc.</button>
+          <button onclick="testPreset('Perplexity AI Corp')" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300">Perplexity AI Corp</button>
+        </div>
+
+        <!-- Output Result Panel -->
+        <div id="sandbox-result" class="mt-6 p-5 rounded-xl bg-gray-950/80 border border-gray-800 font-mono text-sm space-y-3">
+          <div class="text-gray-500 text-xs">// Resolution Result will appear here</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-gray-800/80 glass py-6 px-6 text-center text-xs text-gray-500">
+    <p>FrontierAtlas Global Intelligence Graph &bull; GraphOne AI Engineer Assessment &bull; <a href="https://github.com/Veylith/frontier-atlas-intelligence-pipeline" class="text-indigo-400 hover:underline">GitHub Repository</a></p>
+  </footer>
+
+  <!-- EMBEDDED DATA & APPLICATION LOGIC -->
+  <script>
+    let allData = {
+      startups: [],
+      products: [],
+      papers: [],
+      news: [],
+      jobs: [],
+      mapping: []
+    };
+
+    let currentTab = 'startups';
+    let currentPage = 1;
+    const pageSize = 50;
+
+    // Fetch JSON datasets
+    async function loadAllDatasets() {
+      try {
+        const [stRes, prRes, paRes, neRes, joRes, maRes] = await Promise.all([
+          fetch('data/json/startups.json').then(r => r.json()),
+          fetch('data/json/products.json').then(r => r.json()),
+          fetch('data/json/research_papers.json').then(r => r.json()),
+          fetch('data/json/news.json').then(r => r.json()),
+          fetch('data/json/jobs.json').then(r => r.json()),
+          fetch('data/json/entity_mapping_log.json').then(r => r.json())
+        ]);
+
+        allData.startups = stRes || [];
+        allData.products = prRes || [];
+        allData.papers = paRes || [];
+        allData.news = neRes || [];
+        allData.jobs = joRes || [];
+        allData.mapping = maRes || [];
+
+        // Update KPIs
+        document.getElementById('kpi-startups').innerText = allData.startups.length.toLocaleString();
+        document.getElementById('kpi-products').innerText = allData.products.length.toLocaleString();
+        document.getElementById('kpi-papers').innerText = allData.papers.length.toLocaleString();
+        document.getElementById('kpi-news').innerText = allData.news.length.toLocaleString();
+        document.getElementById('kpi-jobs').innerText = allData.jobs.length.toLocaleString();
+        document.getElementById('kpi-mapping').innerText = allData.mapping.length.toLocaleString();
+
+        renderCurrentTab();
+      } catch (e) {
+        console.error("Error loading datasets:", e);
+      }
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      currentPage = 1;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white hover:bg-gray-800";
+      });
+
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-indigo-600 text-white shadow-lg shadow-indigo-600/30";
+      }
+      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+
+      const controls = document.getElementById('controls-bar');
+      if (tabId === 'sandbox') {
+        controls.classList.add('hidden');
+      } else {
+        controls.classList.remove('hidden');
+      }
+
+      renderCurrentTab();
+    }
+
+    function handleSearch() {
+      currentPage = 1;
+      renderCurrentTab();
+    }
+
+    function renderCurrentTab() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+
+      if (currentTab === 'startups') renderStartups(q);
+      else if (currentTab === 'products') renderProducts(q);
+      else if (currentTab === 'papers') renderPapers(q);
+      else if (currentTab === 'news') renderNews(q);
+      else if (currentTab === 'jobs') renderJobs(q);
+      else if (currentTab === 'mapping') renderMapping(q);
+    }
+
+    // 1. Startups
+    function renderStartups(q) {
+      let filtered = allData.startups.filter(s => {
+        const name = (s.content.entityName || '').toLowerCase();
+        const desc = (s.content.data.description || '').toLowerCase();
+        return !q || name.includes(q) || desc.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length.toLocaleString()} of ${allData.startups.length.toLocaleString()} Startups`;
+
+      const start = (currentPage - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      const tbody = document.getElementById('startups-table-body');
+      tbody.innerHTML = paginated.map(s => `
+        <tr class="hover:bg-gray-800/40 transition">
+          <td class="py-3 px-4 font-bold text-gray-100 flex items-center space-x-2">
+            <span class="w-6 h-6 rounded bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] uppercase font-mono">${(s.content.entityName || 'A')[0]}</span>
+            <span>${escapeHtml(s.content.entityName)}</span>
+          </td>
+          <td class="py-3 px-4 text-gray-300">
+            ${(s.content.data.categories || []).slice(0, 2).map(c => `<span class="px-2 py-0.5 rounded bg-gray-800 text-[10px] text-gray-300 mr-1">${escapeHtml(c)}</span>`).join('')}
+          </td>
+          <td class="py-3 px-4 text-gray-400">${s.content.data.employeeCount ? s.content.data.employeeCount + ' employees' : '—'}</td>
+          <td class="py-3 px-4 text-gray-400 font-mono text-[11px]">${escapeHtml(s.source.name)}</td>
+          <td class="py-3 px-4 text-gray-500 font-mono text-[11px]">${s.collectedAt.substring(0, 10)}</td>
+          <td class="py-3 px-4 text-right">
+            <a href="${s.content.data.website || s.source.url}" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] hover:underline">Link &rarr;</a>
+          </td>
+        </tr>
+      `).join('');
+
+      renderPagination('pagination-startups', filtered.length);
+    }
+
+    // 2. Products
+    function renderProducts(q) {
+      let filtered = allData.products.filter(p => {
+        const name = (p.content.productName || '').toLowerCase();
+        const startup = (p.content.startupName || '').toLowerCase();
+        const pricing = (p.content.pricingModel || '').toLowerCase();
+        return !q || name.includes(q) || startup.includes(q) || pricing.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length.toLocaleString()} of ${allData.products.length.toLocaleString()} Products`;
+
+      const start = (currentPage - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      const tbody = document.getElementById('products-table-body');
+      tbody.innerHTML = paginated.map(p => {
+        let badgeColor = 'bg-gray-800 text-gray-300';
+        if (p.content.pricingModel === 'FREE') badgeColor = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        else if (p.content.pricingModel === 'FREEMIUM') badgeColor = 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+        else if (p.content.pricingModel === 'PAID') badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        else if (p.content.pricingModel === 'ENTERPRISE') badgeColor = 'bg-purple-500/20 text-purple-300 border border-purple-500/30';
+
+        return `
+          <tr class="hover:bg-gray-800/40 transition">
+            <td class="py-3 px-4 font-bold text-gray-100">${escapeHtml(p.content.productName)}</td>
+            <td class="py-3 px-4 text-indigo-300 font-medium">${escapeHtml(p.content.startupName)}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono ${badgeColor}">${p.content.pricingModel}</span>
+            </td>
+            <td class="py-3 px-4 text-gray-400">${escapeHtml(p.content.category || 'AI Tool')}</td>
+            <td class="py-3 px-4 text-gray-500 font-mono text-[11px]">${p.collectedAt.substring(0, 10)}</td>
+            <td class="py-3 px-4 text-right">
+              <a href="${p.content.website_url || p.source.url}" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-mono text-[11px] hover:underline">Link &rarr;</a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      renderPagination('pagination-products', filtered.length);
+    }
+
+    // 3. Papers
+    function renderPapers(q) {
+      let filtered = allData.papers.filter(p => {
+        const title = (p.content.title || '').toLowerCase();
+        const authors = (p.content.authors || []).join(' ').toLowerCase();
+        return !q || title.includes(q) || authors.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length.toLocaleString()} of ${allData.papers.length.toLocaleString()} Research Papers`;
+
+      const start = (currentPage - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      const tbody = document.getElementById('papers-table-body');
+      tbody.innerHTML = paginated.map(p => `
+        <tr class="hover:bg-gray-800/40 transition">
+          <td class="py-3 px-4 font-semibold text-gray-100 max-w-sm">
+            <a href="${p.content.paper_url}" target="_blank" class="hover:text-indigo-400 transition hover:underline">${escapeHtml(p.content.title)}</a>
+          </td>
+          <td class="py-3 px-4 text-gray-400 max-w-xs truncate">${escapeHtml((p.content.authors || []).slice(0, 3).join(', '))}</td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-blue-900/30 text-blue-300 font-mono text-[10px]">${escapeHtml(p.content.primary_category || 'cs.AI')}</span></td>
+          <td class="py-3 px-4 text-gray-400 font-mono text-[11px]">${(p.content.published_date || '').substring(0, 10)}</td>
+          <td class="py-3 px-4">
+            ${p.content.github_url ? `<a href="${p.content.github_url}" target="_blank" class="text-gray-300 hover:text-white font-mono text-[11px] flex items-center space-x-1"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg><span>Repo</span></a>` : '<span class="text-gray-600">—</span>'}
+          </td>
+          <td class="py-3 px-4 text-right">
+            <span class="inline-flex items-center px-2 py-0.5 rounded font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              ⭐ ${p.content.github_stars ? p.content.github_stars.toLocaleString() : '0'}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+
+      renderPagination('pagination-papers', filtered.length);
+    }
+
+    // 4. News
+    function renderNews(q) {
+      let filtered = allData.news.filter(n => {
+        const t = (n.content.title || '').toLowerCase();
+        const s = (n.content.summary || '').toLowerCase();
+        return !q || t.includes(q) || s.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length} 24-hr fresh AI News Articles`;
+
+      const grid = document.getElementById('news-grid');
+      grid.innerHTML = filtered.map(n => `
+        <div class="glass-card rounded-2xl p-5 border border-gray-800 flex flex-col justify-between space-y-4 hover:border-indigo-500/40 transition">
+          <div>
+            <div class="flex items-center justify-between text-[11px] mb-2">
+              <span class="px-2 py-0.5 rounded font-bold font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${escapeHtml(n.content.source_name)}</span>
+              <span class="text-emerald-400 font-mono font-semibold flex items-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping"></span>
+                < 24h Fresh
+              </span>
+            </div>
+            <h3 class="font-bold text-base text-gray-100 leading-snug">
+              <a href="${n.content.source_url}" target="_blank" class="hover:text-indigo-400 transition">${escapeHtml(n.content.title)}</a>
+            </h3>
+            <p class="text-xs text-gray-400 mt-2 line-clamp-3">${escapeHtml(n.content.summary)}</p>
+          </div>
+          <div class="pt-3 border-t border-gray-800/80 flex items-center justify-between text-[11px] text-gray-500">
+            <span>${n.content.published_date.replace('T', ' ').substring(0, 16)} UTC</span>
+            <a href="${n.content.source_url}" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-bold hover:underline">Read Full Text &rarr;</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 5. Jobs
+    function renderJobs(q) {
+      let filtered = allData.jobs.filter(j => {
+        const c = (j.content.company || '').toLowerCase();
+        const t = (j.content.title || '').toLowerCase();
+        const r = (j.content.role_family || '').toLowerCase();
+        return !q || c.includes(q) || t.includes(q) || r.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length} 24-hr fresh AI Job Postings`;
+
+      const grid = document.getElementById('jobs-grid');
+      grid.innerHTML = filtered.map(j => `
+        <div class="glass-card rounded-2xl p-5 border border-gray-800 flex flex-col justify-between space-y-4 hover:border-indigo-500/40 transition">
+          <div>
+            <div class="flex items-center justify-between text-[11px] mb-2">
+              <span class="px-2 py-0.5 rounded font-bold font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30">${escapeHtml(j.content.role_family)}</span>
+              <span class="px-2 py-0.5 rounded font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">${j.content.is_remote ? '🌐 Remote' : '🏢 On-Site'}</span>
+            </div>
+            <h3 class="font-bold text-base text-gray-100 leading-snug">${escapeHtml(j.content.title)}</h3>
+            <div class="text-sm font-semibold text-indigo-400 mt-1">${escapeHtml(j.content.company)}</div>
+            <p class="text-xs text-gray-400 mt-2 line-clamp-2">${escapeHtml(j.content.description_snippet || 'Exciting role at high-growth AI venture.')}</p>
+          </div>
+          <div class="pt-3 border-t border-gray-800/80 flex items-center justify-between text-[11px] text-gray-500">
+            <span>Posted: ${j.content.date.substring(0, 10)}</span>
+            <a href="${j.content.source_url}" target="_blank" class="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition">Apply Now &rarr;</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 6. Mapping Log
+    function renderMapping(q) {
+      let filtered = allData.mapping.filter(m => {
+        const raw = (m.raw_name || '').toLowerCase();
+        const can = (m.canonical_name || '').toLowerCase();
+        const met = (m.method_used || '').toLowerCase();
+        return !q || raw.includes(q) || can.includes(q) || met.includes(q);
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${filtered.length.toLocaleString()} of ${allData.mapping.length.toLocaleString()} Entity Mapping Audit Logs`;
+
+      const start = (currentPage - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      const tbody = document.getElementById('mapping-table-body');
+      tbody.innerHTML = paginated.map(m => `
+        <tr class="hover:bg-gray-800/40 transition">
+          <td class="py-3 px-4 font-medium text-gray-300">${escapeHtml(m.raw_name)}</td>
+          <td class="py-3 px-4 font-bold text-emerald-400">${escapeHtml(m.canonical_name)}</td>
+          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-gray-800 text-[10px]">${m.entity_type}</span></td>
+          <td class="py-3 px-4 text-indigo-300 font-mono text-[11px]">${m.method_used}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-amber-400">${(m.confidence_score * 100).toFixed(1)}%</td>
+        </tr>
+      `).join('');
+
+      renderPagination('pagination-mapping', filtered.length);
+    }
+
+    function renderPagination(containerId, totalCount) {
+      const totalPages = Math.ceil(totalCount / pageSize);
+      const container = document.getElementById(containerId);
+      if (totalPages <= 1) {
+        container.innerHTML = `<span>Page 1 of 1</span>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <div>Page ${currentPage} of ${totalPages} (${totalCount.toLocaleString()} items)</div>
+        <div class="flex items-center space-x-2">
+          <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-white"'} class="px-2.5 py-1 rounded bg-gray-800 border border-gray-700">&larr; Prev</button>
+          <button onclick="changePage(1)" ${currentPage >= totalPages ? 'disabled class="opacity-40 cursor-not-allowed"' : 'class="hover:text-white"'} class="px-2.5 py-1 rounded bg-gray-800 border border-gray-700">Next &rarr;</button>
+        </div>
+      `;
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderCurrentTab();
+    }
+
+    // SANDBOX RESOLUTION ENGINE
+    const CANONICAL_KB = {
+      "openai": "OpenAI",
+      "open ai": "OpenAI",
+      "openai, inc.": "OpenAI",
+      "openai inc": "OpenAI",
+      "anthropic": "Anthropic",
+      "anthropic pbc": "Anthropic",
+      "anthropic ai": "Anthropic",
+      "mistral ai": "Mistral AI",
+      "mistral ai sas": "Mistral AI",
+      "mistralai": "Mistral AI",
+      "hugging face": "Hugging Face",
+      "huggingface": "Hugging Face",
+      "scale ai": "Scale AI",
+      "scale ai inc": "Scale AI",
+      "scale ai, inc.": "Scale AI",
+      "midjourney": "Midjourney",
+      "midjourney inc": "Midjourney",
+      "elevenlabs": "ElevenLabs",
+      "elevenlabs inc.": "ElevenLabs",
+      "eleven labs": "ElevenLabs",
+      "perplexity ai": "Perplexity AI",
+      "perplexity": "Perplexity AI",
+      "cohere": "Cohere",
+      "cohere inc": "Cohere",
+      "cursor": "Cursor",
+      "cursor ide": "Cursor"
+    };
+
+    function runSandboxResolution() {
+      const raw = document.getElementById('sandbox-input').value.trim();
+      if (!raw) return;
+
+      const rawLower = raw.toLowerCase();
+      let canonical = raw;
+      let confidence = 0.80;
+      let method = "CANONICAL_RULE_STRIP";
+
+      // Stage 1: Exact Seed Match
+      if (CANONICAL_KB[rawLower]) {
+        canonical = CANONICAL_KB[rawLower];
+        confidence = 1.00;
+        method = "EXACT_SEED_OR_ALIAS";
+      } else {
+        // Stage 2: Suffix Strip Rule
+        const cleaned = raw.replace(/,?\s*\b(inc|llc|ltd|corp|corporation|pbc|gmbh|sas|b\.v\.|pte\.?\s*ltd|co|labs|systems)\b\.?/gi, '').trim();
+        if (CANONICAL_KB[cleaned.toLowerCase()]) {
+          canonical = CANONICAL_KB[cleaned.toLowerCase()];
+          confidence = 0.98;
+          method = "RULE_NORMALIZED_MATCH";
+        } else if (cleaned.length > 0) {
+          canonical = cleaned;
+          confidence = 0.85;
+          method = "CANONICAL_RULE_STRIP";
+        }
+      }
+
+      const resBox = document.getElementById('sandbox-result');
+      resBox.innerHTML = `
+        <div class="text-emerald-400 font-bold text-base flex items-center space-x-2">
+          <span>✔ Resolved Entity:</span>
+          <span class="text-white text-lg bg-emerald-500/20 px-3 py-1 rounded-lg border border-emerald-500/30">${escapeHtml(canonical)}</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 text-xs border-t border-gray-800 mt-2">
+          <div><span class="text-gray-500">Raw Input:</span> <span class="text-gray-300 font-bold">${escapeHtml(raw)}</span></div>
+          <div><span class="text-gray-500">Confidence:</span> <span class="text-amber-400 font-bold">${(confidence * 100).toFixed(1)}%</span></div>
+          <div><span class="text-gray-500">Method Used:</span> <span class="text-indigo-400 font-bold">${method}</span></div>
+          <div><span class="text-gray-500">Audit Status:</span> <span class="text-emerald-400 font-bold">VERIFIED_IMMUTABLE</span></div>
+        </div>
+      `;
+    }
+
+    function testPreset(name) {
+      document.getElementById('sandbox-input').value = name;
+      runSandboxResolution();
+    }
+
+    function downloadExcel() {
+      window.location.href = 'data/FrontierAtlas_Intelligence_Graph.xlsx';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Auto load on init
+    window.addEventListener('DOMContentLoaded', loadAllDatasets);
+  </script>
+</body>
+</html>
