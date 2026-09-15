@@ -1,7 +1,5 @@
 # FrontierAtlas Global Intelligence Graph Ingestion Pipeline
 
-**GraphOne / FrontierAtlas AI Engineer Assessment**  
-Submission Form: [https://forms.gle/8bnrg78Ki4E25RAk8](https://forms.gle/8bnrg78Ki4E25RAk8)
 
 ---
 
